@@ -13,6 +13,11 @@
       </router-link>
     </template>
     <template slot="navbar-menu">
+      <li v-if="userinfo&&userinfo.role.includes('ADMIN')" class="nav-item">    
+        <router-link to="/admin">
+          <a class="nav-link" href="/"><span style="font-size:17px;">관리자</span></a>
+        </router-link>
+      </li>   
       <li class="nav-item">    
         <router-link to="/notice">
           <a class="nav-link" href="/"><span style="font-size:17px;">공지사항</span></a>
@@ -38,50 +43,10 @@
           <a class="nav-link"><span style="font-size:17px;">통계</span></a>
         </router-link>
       </li>   
-      <!-- <button @click="tokentest">토큰테스트</button> -->
-
-      <!-- <drop-down
-        tag="li"
-        title="Components"
-        icon="now-ui-icons design_app"
-        class="nav-item"
-      >
-        <nav-link to="/">
-          <i class="now-ui-icons business_chart-pie-36"></i> All components
-        </nav-link>
-        <a
-          href="https://demos.creative-tim.com/vue-now-ui-kit/documentation"
-          target="_blank"
-          class="dropdown-item"
-        >
-          <i class="now-ui-icons design_bullet-list-67"></i> Documentation
-        </a>        
-        <nav-link to="/document">
-          <i class="now-ui-icons design_bullet-list-67"></i> ExamplePage
-        </nav-link>
-      </drop-down>
-      <drop-down
-              tag="li"
-              title="Examples"
-              icon="now-ui-icons design_image"
-              class="nav-item"
-      >
-        <nav-link to="/landing">
-          <i class="now-ui-icons education_paper"></i> Landing
-        </nav-link>
-        <nav-link to="/profile">
-          <i class="now-ui-icons users_single-02"></i> Profile
-        </nav-link>
-      </drop-down> -->
       <li class="nav-item">    
           <a class="nav-link"><span style="font-size:17px;">|</span></a>
       </li> 
       <li class="nav-item" v-show="!userinfo">
-        <!-- <a
-          class="nav-link btn btn-neutral"
-          href="#"
-          target="_blank"
-        > -->
         <router-link to="/login" class="nav-link btn btn-neutral">
           <i class="now-ui-icons users_circle-08"></i>
           <p>로그인</p>

@@ -20,6 +20,7 @@ export default new Vuex.Store({
     notice: {},
     apts: [],
     apt: {},
+    members:[],
   },
   getters:{
     qnas:state => state.qnas,//질문글 리스트 반환
@@ -27,6 +28,7 @@ export default new Vuex.Store({
     answers:state => state.answers, //특정 질문글에 대한 응답글들 반환
     userinfo:state => state.userinfo,//유저의 이름 반환    
     keyword:state => state.keyword,//검색어 반환
+    members:state => state.members,//유저 반환
     notices(state) {
       return state.notices;
     },
@@ -67,6 +69,9 @@ export default new Vuex.Store({
     setApt(state, payload) {
       state.apt = payload;
     },
+    setMembers(state, payload){
+      state.members = payload;
+    }
   },
   actions: {
     getMembercode(){
@@ -138,18 +143,6 @@ export default new Vuex.Store({
       this._vm.$session.remove('jwt');
       this._vm.$session.remove('userinfo');
       this._vm.$session.remove('session-id');
-      // SET_USER_INFO(state,userinfo){//유저의 정보 세팅
-      //   state.userinfo = userinfo;
-      // },
-      // SET_QNAS(state,payload){
-      //   state.qnas = payload;
-      // },
-      // SET_QNA(state,payload){
-      //   state.qna = payload;
-      // },
-      // SET_ANSWERS(state,payload){
-      //   state.answers = payload;
-      // }
       this.commit("SET_USER_INFO",null);
       this.commit('SET_QNAS',[]);
       this.commit('SET_QNA',{});
@@ -274,6 +267,13 @@ export default new Vuex.Store({
         console.dir(error);
       });
     },
+    async getMembers(context){
+      await http.get("admin/member").then(({ data }) => {
+        context.commit("setMembers", data);
+      }).catch((error) => {
+        console.dir(error);
+      });
+    }
   },
   modules: {},
 });

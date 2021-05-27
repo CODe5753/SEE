@@ -12,6 +12,7 @@ import Notice from './pages/Notice.vue';
 import MyInfo from './pages/MyInfo.vue';
 import News from './pages/News.vue';
 import BuildingDetail from './pages/BuildingDetail.vue';
+import Admin from './pages/Admin.vue';
 import Statistics from './pages/Statistics.vue';
 import MainNavbar from './layout/MainNavbar.vue';
 import MainFooter from './layout/MainFooter.vue';
@@ -30,6 +31,22 @@ export default new Router({
         header: { colorOnScroll: 10 },
         footer: { backgroundColor: 'black' }
       }
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      components: { default: Admin, header: MainNavbar, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 10 },
+        footer: { backgroundColor: 'black' }
+      },
+      children:[
+        {
+          path:"",
+          name:"memberlist",
+          component:()=>import("@/components/adminpage/MemberList.vue"),
+        }
+      ]
     },
     {
       path: '/statistics',
