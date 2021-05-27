@@ -31,8 +31,12 @@
   </div>
       <div class="section" style="height:100%;">
           <div class="container">
-          <div v-if="apts.length">    
+          <div>    
               <h4 class="title" style="color:black">나의 북마크 목록</h4>  
+              <div v-if="!apts.length">
+                <h5 class="text-center text-danger">북마크가 존재하지 않습니다.</h5>
+              </div>
+              <div v-if="apts.length">
               <b-table id="my-table"                
                 :per-page="perPage" 
                 :current-page="currentPage"    
@@ -43,7 +47,9 @@
                 @row-clicked="myRowClickHandler_apts"
                 >
               </b-table>
+              </div>
           </div>
+          <div v-if="apts.length">
           <b-pagination
             v-model="currentPage"
             :total-rows="apts.length"
@@ -51,6 +57,7 @@
             align="center"
             aria-controls="my-table"
           ></b-pagination>
+          </div>
         </div>
       </div>
       <div class="section" style="height:100%;">
