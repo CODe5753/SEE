@@ -60,8 +60,32 @@
             </div> 
             <div class="position">
               <div class="squ"> </div>
-              <div class="title"><h3>연관 검색 정보</h3></div>
-
+              <div class="title"><h3>연관 뉴스 정보</h3></div>
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-4" v-for="(new_,index) in news" :key="index">                    
+                    <a :href="new_.originallink">
+                      <div class="border text-black">
+                        <div class="title">
+                          <h5>{{new_.title}}</h5>                         
+                        </div>        
+                        <p v-html="new_.description"></p>                        
+                        <p>작성일시 : {{new_.pubDate}}</p>
+                      </div>
+                    </a>
+                      <!-- <a :href="'https://search.naver.com/search.naver?where=image&sm=tab_jum&query='+apt.name">
+                        <img :src="image.link" style="width:100%;">
+                        <div class="caption">
+                          <p>{{image.title}}</p>
+                        </div>
+                      </a> -->
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="position">
+              <div class="squ"> </div>
+              <div class="title"><h3>연관 이미지 정보</h3></div>
               <div class="container">
                 <div class="row">
                   <div class="col-md-4" v-for="(image,index) in images" :key="index">
@@ -102,6 +126,7 @@ export default {
       markers : [],
       currCategory : '',
       images:'',
+      news:'',
     }
   },
   components:{
@@ -131,6 +156,16 @@ export default {
         keyword:this.apt.name
       }).then((data)=>{
         this.images=data.data.items;
+        console.log(data.data.items);
+        return data.data.items;
+      }).catch((err)=>{
+        console.log(err);
+      });
+
+      http.post('/house/getnews',{
+        keyword:this.apt.name
+      }).then((data)=>{
+        this.news=data.data.items;
         console.log(data.data.items);
         return data.data.items;
       }).catch((err)=>{
