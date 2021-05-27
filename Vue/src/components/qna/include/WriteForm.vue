@@ -4,6 +4,7 @@
       <div class="card-header text-center">
           <h1 class="card-title">게시물
             <template v-if="type == 'create'">등록</template>
+            <template v-else-if="type == 'createanswer'">답글 달기</template>
             <template v-else >수정</template>
           </h1>
       </div>

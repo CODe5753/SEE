@@ -73,12 +73,6 @@
                         <p>작성일시 : {{new_.pubDate}}</p>
                       </div>
                     </a>
-                      <!-- <a :href="'https://search.naver.com/search.naver?where=image&sm=tab_jum&query='+apt.name">
-                        <img :src="image.link" style="width:100%;">
-                        <div class="caption">
-                          <p>{{image.title}}</p>
-                        </div>
-                      </a> -->
                   </div>
                 </div>
               </div>
@@ -108,10 +102,7 @@
   </div>
   </div>
 </template>
-
-
 <script>
-
 import { mapGetters } from "vuex";
 import {Card} from '@/components';
 import http from "@/util/http-common";
@@ -221,8 +212,8 @@ export default {
     }
     },
     save(){ //매물찜!
-      console.log(this.userinfo.code);
-      console.log(this.$route.params.id);
+      // console.log('사용자 ID : '+this.userinfo.code);
+      // console.log(this.$route.params.id);
       if(!this.userinfo){
         alert("로그인 먼저 해주세요");
         this.$router.push('/login');
