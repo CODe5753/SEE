@@ -35,9 +35,9 @@
             :member_code="my_member_code"            
           ></comment-input>
 
-          <!-- 댓글 -->
+          <!-- 답글 -->
           <div v-if="answer.member_code == my_member_code" class="text-right">
-            <router-link :to="`/qna/modify/${answer.id}`" class="btn btn-primary">수정</router-link>
+            <router-link :to="{name:'qna-modify',params:{id:answer.id}}" class="btn btn-primary">수정</router-link>
             <a href="#" class="btn btn-danger" @click="deleteQna(answer.id)">삭제</a>
           </div>
         </div>
