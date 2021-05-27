@@ -63,6 +63,7 @@
               <div class="title"><h3>연관 뉴스 정보</h3></div>
               <div class="container">
                 <div class="row">
+                  <div v-if="!news.length"><h4>연관 뉴스 정보가 없습니다!</h4></div>
                   <div class="col-md-4" v-for="(new_,index) in news" :key="index">                    
                     <a :href="new_.originallink">
                       <div class="border text-black">
@@ -82,6 +83,9 @@
               <div class="title"><h3>연관 이미지 정보</h3></div>
               <div class="container">
                 <div class="row">
+                  <div v-if="!images.length">
+                    <h4>연관 사진 정보가 없습니다!</h4>
+                  </div>
                   <div class="col-md-4" v-for="(image,index) in images" :key="index">
                       <a :href="'https://search.naver.com/search.naver?where=image&sm=tab_jum&query='+apt.name">
                         <img :src="image.link" style="width:100%;">

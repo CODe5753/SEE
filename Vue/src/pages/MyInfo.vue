@@ -46,7 +46,7 @@
           </div>
           <b-pagination
             v-model="currentPage"
-            :total-rows="rows"
+            :total-rows="apts.length"
             :per-page="perPage"
             align="center"
             aria-controls="my-table"
@@ -55,19 +55,26 @@
       </div>
       <div class="section" style="height:100%;">
           <div class="container">
-          <div v-if="qnas.length">    
+          <div>    
               <h4 class="title" style="color:black">내가 작성한 게시글</h4>  
-              <b-table id="my-table"                
-                :per-page="perPage" 
-                :current-page="currentPage"    
-                :items="getFields()"
-                :fields='fields'
-                :fixed="true"
-                hover
-                @row-clicked="myRowClickHandler"
-                >
-              </b-table>
+              <div v-if="!qnas.length">
+                <h5 class="text-center text-danger">게시글이 존재하지 않습니다.</h5>
+              </div>
+              <div v-else>
+                <b-table id="my-table"                
+                  :per-page="perPage" 
+                  :current-page="currentPage"    
+                  :items="getFields()"
+                  :fields='fields'
+                  :fixed="true"
+                  hover
+                  @row-clicked="myRowClickHandler"
+                  >
+                </b-table>
+              </div>
           </div>
+          
+          <div v-if="qnas.length">
           <b-pagination
             v-model="currentPage"
             :total-rows="rows"
@@ -75,6 +82,7 @@
             align="center"
             aria-controls="my-table"
           ></b-pagination>
+          </div>
         </div>
       </div>
     </div>
