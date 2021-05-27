@@ -19,7 +19,8 @@
                   <h2 class="text-center font-weight-bold" >{{apt.name}}</h2>
               </div>
                 <div class="text-center" style="font-size:larger">{{apt.sigungu}} {{apt.roadname}}</div>
-                <img src="/img/apt.jpg">
+                <!-- <img src="/img/apt.jpg"> -->
+                <img :src="image" alt="">
             
               <div class="squ">
                 <div class="title">
@@ -45,7 +46,9 @@
                     <div class="title"><h3>위치정보</h3></div>
                     <div id="container" class="view_map">
                     <div id="mapWrapper" style="width:100%;height:300px;position:relative;">
-                        <div id="map" style="width:100%;height:100%"></div> <!-- 지도를 표시할 div 입니다 -->
+                        <div id="map" style="width:100%;height:100%">
+                          
+                        </div> <!-- 지도를 표시할 div 입니다 -->
                         <input type="button" id="btnRoadview" @click="toggleMap(false)" title="로드뷰 보기" value="로드뷰">
                     </div>
                     <div id="rvWrapper" style="width:100%;height:300px;position:absolute;top:0;left:0;">
@@ -54,6 +57,23 @@
                     </div>
                 </div>       
               </div>    
+            </div> 
+            <div class="position">
+              <div class="squ"> </div>
+              <div class="title"><h3>연관 검색 정보</h3></div>
+
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-4" v-for="(image,index) in images" :key="index">
+                      <a :href="'https://search.naver.com/search.naver?where=image&sm=tab_jum&query='+apt.name">
+                        <img :src="image.link" style="width:100%;">
+                        <div class="caption">
+                          <p>{{image.title}}</p>
+                        </div>
+                      </a>
+                  </div>
+                </div>
+              </div>
             </div> 
           <div class="card-footer">
            
@@ -71,7 +91,7 @@
 import { mapGetters } from "vuex";
 import {Card} from '@/components';
 import http from "@/util/http-common";
-
+import axios from 'axios';
 var map, roadview ;
 export default {
   name:'buildingdetail',
@@ -81,20 +101,20 @@ export default {
       contentNode : '',
       markers : [],
       currCategory : '',
+      images:'',
     }
   },
   components:{
       Card
   },
   computed: {
-    ...mapGetters(['apt','userinfo'])
+    ...mapGetters(['apt','userinfo']),
   },
   created() {
     this.$store.dispatch("getApt", `${this.$route.params.id}`).then((data)=>{
       console.log(this.apt);
     }); //this
-  },//create
-
+  },
   mounted() {
    if (window.kakao && window.kakao.maps) {
       this.initMap();
@@ -105,6 +125,17 @@ export default {
         script.src ='//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=8c20713ab30fc460bab14a15ad3cdf35&libraries=services';
         document.head.appendChild(script);
     }
+    
+    
+      http.post('/house/getimage',{
+        keyword:this.apt.name
+      }).then((data)=>{
+        this.images=data.data.items;
+        console.log(data.data.items);
+        return data.data.items;
+      }).catch((err)=>{
+        console.log(err);
+      })
   }, 
   methods:{
     initMap(){

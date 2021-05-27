@@ -10,13 +10,14 @@
           <div id='map'></div>
           <div id='currentLocation' @click="currentLocation"><img src="img/current_location.png"/></div>
           <div id='searchControl'>
-            <form-group-input class="" 
-                placeholder="지하철, 건물명, 주소로 검색해 보세요" 
+            <form-group-input class="form-control input has-large"
+                style="background-color:white !important; left:10px; width:400px"
+                placeholder="건물명, 주소로 검색해 보세요" 
                 v-model="keyword"
                 @keyup.enter="search(keyword)"
                 />
           </div>
-          <div id="menu_wrap" class="bg_white">
+          <div v-if="apts" id="menu_wrap" class="bg_white">
           <ul id="placesList"></ul>
           <div id="pagination">
           </div>
@@ -51,7 +52,7 @@ export default{
     FormGroupInput
   },
    computed:{
-    ...mapGetters(["apts"]),
+     ...mapGetters(["apts"]),
   },
   data() {
     return {
@@ -72,6 +73,7 @@ export default{
     }
   },
   mounted() {
+    console.log(this.apts);
    if (window.kakao && window.kakao.maps) {
       this.initMap();
     } else {
@@ -548,7 +550,7 @@ export default{
 }
 #currentLocation{
   position:absolute;
-  top:5px;left:10px;width:42px;height:42px;z-index: 1;
+  top:900px;left:1000px;width:42px;height:42px;z-index: 1;
   cursor: pointer; 
   background-color: white;
   /* background: url(https://t1.daumcdn.net/localimg/localimages/07/2018/pc/common/img_search.png) 0 -450px no-repeat; */
@@ -563,8 +565,8 @@ input.form-control{
 .map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
 .map_wrap a, .map_wrap a:hover, .map_wrap a:active{color:#000 !important;text-decoration: none;}
 .map_wrap {position:relative;width:100%;height:500px;}
-#menu_wrap {position:absolute;top:0;left:0;bottom:0;height:800px;width:30vw;margin:50px 0 30px 10px;padding:5px;overflow-y:auto;background:rgba(255, 255, 255, 0.7);z-index: 1;font-size:12px;border-radius: 10px;}
-.bg_white {background:#fff;}
+#menu_wrap {position:absolute;top:20px;left:0;bottom:0;height:800px;width:20vw;margin:50px 0 30px 10px;padding:5px;overflow-y:auto;background:rgba(255, 255, 255, 0.9);z-index: 1;font-size:12px;border-radius: 10px;}
+.bg_white {background:#ffffff; opacity: 1 !important;}
 #menu_wrap hr {display: block; height: 1px;border: 0; border-top: 2px solid #5F5F5F;margin:3px 0;}
 #menu_wrap .option{text-align: center;}
 #menu_wrap .option p {margin:10px 0;}  
@@ -601,15 +603,15 @@ input.form-control{
 </style>
 
 <style>
-    .title{text-align: center;}
-    .wrap {position: absolute;left: 0;bottom: 3px;width: 75px;height: 75px;margin-left: -35px;text-align: center;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+    .title{text-align: center !important;}
+    .wrap {position: absolute;left: 0;bottom: 3px;width: 75px;height: 82px;margin-left: -35px;text-align: center;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
     .wrap * {padding: 0;margin: 0;}
     .wrap .infos {width: 70px;height: 70px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
     .wrap .infos:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
     .infos .title {margin-bottom:0px;padding: 3px 0 0 0px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;color: darkslateblue;}
     .infos .body {position: relative;overflow: hidden;}
     .infos .desc {position: relative;margin: 0px 0 0 0px;height: 35px;color: black;}
-    .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+    .desc .ellipsis {font-size:15px; font-weight: bold;  overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
     .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
     .infos:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
 </style>

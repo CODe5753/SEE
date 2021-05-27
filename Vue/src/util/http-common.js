@@ -7,6 +7,8 @@ const instance = axios.create({
   baseURL: 'http://localhost:9999',
   headers: {
     "Content-type": "application/json",
+    'X-Naver-ClientId':'vuVCvv_eMPr09W2JvQCT',
+    'X-Naver-Client-Secret':'vxZJ2xnpie'
   },
   timeout:1000
 });
