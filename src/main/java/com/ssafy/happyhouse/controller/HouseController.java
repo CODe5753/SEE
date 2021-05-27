@@ -131,19 +131,6 @@ public class HouseController {
 		}
 	}
 	
-	@ApiOperation(value = "HouseInfo 목록 조회", notes="HouseInfo에 대한 모든 정보를 반환합니다.")
-	@GetMapping("/getinerestingbuilding/{member_code}")
-	public ResponseEntity<List<HouseInfoDto>> getinterestbuilding(@PathVariable("member_code") @ApiParam(value="HouseInfo info") int member_code) {
-		logger.info("[Called] HouseInfo 목록조회");
-		List<HouseInfoDto> list = houseService.getInteresetBuilding(member_code);
-		logger.info("[Result] HouseInfo 목록 갯수 : "+list.size());
-		if(list!=null && !list.isEmpty()) {
-			return new ResponseEntity<List<HouseInfoDto>>(list,HttpStatus.OK);
-		}else {
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
-		}
-	}
-	
 	@ApiOperation(value = "HouseInfo 특정 구역 목록 조회", notes="특정구역에 대한 대한 모든 정보를 반환합니다.")
 	@PostMapping("/specificzone")
 	public ResponseEntity<List<HouseInfoDto>> specificzone(@RequestBody @ApiParam(value = "위도 경도 값") Map<String, String> map) {

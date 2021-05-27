@@ -23,12 +23,36 @@
             <p>게시물</p>
           </div>
           <div class="social-description col-md-6">
-            <h2>0</h2>
+            <h2>{{apts.length}}</h2>
             <p>북마크</p>
           </div>
         </div>
       </div>
   </div>
+      <div class="section" style="height:100%;">
+          <div class="container">
+          <div v-if="apts.length">    
+              <h4 class="title" style="color:black">나의 북마크 목록</h4>  
+              <b-table id="my-table"                
+                :per-page="perPage" 
+                :current-page="currentPage"    
+                :items="getAptFields()"
+                :fields='aptfields'
+                :fixed="true"
+                hover
+                @row-clicked="myRowClickHandler_apts"
+                >
+              </b-table>
+          </div>
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="rows"
+            :per-page="perPage"
+            align="center"
+            aria-controls="my-table"
+          ></b-pagination>
+        </div>
+      </div>
       <div class="section" style="height:100%;">
           <div class="container">
           <div v-if="qnas.length">    
@@ -75,12 +99,23 @@ export default {
                 {key:'작성일자',sortable:true},
                 {key:'수정일자',sortable:true},
                 {key:'상위게시글',thClass:'d-none',tdClass:'d-none'}
+            ],
+            aptfields:[
+                '시군구',
+                '이름',
+                {key:'면적',sortable:true},
+                {key:'계약일',sortable:true},
+                {key:'타입',sortable:true},
+                {key:'층',sortable:true},
+                {key:'매매(보증금)',sortable:true},
+                {key:'건축년도',sortable:true},
+                {key:'도로명주소'},
+                {key:'번호',thClass:'d-none',tdClass:'d-none'}
             ]  
         }
     },
     computed:{
-    ...mapGetters(["qnas"]),
-    ...mapGetters(["userinfo"]),    
+    ...mapGetters(["qnas","userinfo","apts"]),
     rows(){
     //   console.log(this.qnas.length);
       return this.qnas.length
@@ -90,8 +125,28 @@ export default {
     created() {        
         console.log(this.userinfo.code);
         this.$store.dispatch("getMyQna",this.userinfo.code);
+        this.$store.dispatch("getInterestBuildings",this.userinfo.code);
     },
     methods: {
+        getAptFields(){
+            console.log(this.apts);
+            let list = [];
+            this.apts.forEach(el => {
+                list.push({
+                  '시군구':el.sigungu,
+                '이름':el.name,
+                '면적':el.area,
+                '계약일':el.contract_date,
+                '타입':el.contract_type,
+                '층':el.floor,
+                '매매(보증금)':el.dealamount,
+                '건축년도':el.buildyear,
+                '도로명주소':el.roadname,
+                '번호':el.id
+                })
+            });
+            return list;
+        },
         getFields(){
             let list = [];
             this.qnas.forEach(el => {
@@ -120,6 +175,12 @@ export default {
           }else{
             this.$router.push('qna/view/'+record.상위게시글);
           }
+          // window.open(record.링크);///새탭에서 열기
+        },
+        myRowClickHandler_apts(record,index){
+          console.log('Apts Click handler : ');
+          console.log(record);
+          this.$router.push('/buildingdetail/'+record.번호);
           // window.open(record.링크);///새탭에서 열기
         },
       

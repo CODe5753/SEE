@@ -223,8 +223,13 @@ export default {
               member_code : this.userinfo.code,
               building_id : this.$route.params.id
           }).then(({data})=>{
-              console.log("간다잇");
-              alert('관심 건물에 추가되었습니다.\n[내정보]에서 확인 가능합니다.');
+            console.log('관심건물추가');
+              console.log(data);
+              if(data=='overlap'){
+                alert('이미 추가된 건물입니다.');
+              }else{
+                alert('관심 건물에 추가되었습니다.\n[내정보]에서 확인 가능합니다.');
+              }
           });
       }
     },

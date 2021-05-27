@@ -273,6 +273,13 @@ export default new Vuex.Store({
       }).catch((error) => {
         console.dir(error);
       });
+    },
+    async getInterestBuildings(context, payload){
+      await http.get("interestbuilding/" + payload).then(({ data }) => {
+        context.commit("setAptList", data);
+      }).catch((error) => {
+        console.dir(error);
+      });
     }
   },
   modules: {},
