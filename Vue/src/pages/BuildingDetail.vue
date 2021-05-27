@@ -224,7 +224,7 @@ export default {
               building_id : this.$route.params.id
           }).then(({data})=>{
               console.log("간다잇");
-              this.$router.go(-1);
+              alert('관심 건물에 추가되었습니다.\n[내정보]에서 확인 가능합니다.');
           });
       }
     },

@@ -573,6 +573,7 @@ input.form-control{
 #menu_wrap .option button {margin-left:5px;}
 #placesList {padding-left: 0;}
 #placesList li {list-style: none;}
+.item:hover { background: #7531c277;}
 #placesList .item {position:relative;border-bottom:1px solid #888;overflow: hidden;cursor: pointer;min-height: 65px;}
 #placesList .item span {display: block;margin-top:4px;}
 #placesList .item h5, #placesList .item .info {text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}

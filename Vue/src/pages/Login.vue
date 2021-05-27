@@ -81,7 +81,8 @@ export default {
         email:this.email,
         password:this.password
       }).then(()=>{
-        this.$router.push('/')
+        // this.$router.push('/')
+        this.$router.go(-1);//로그인 요청받은 곳으로 다시 돌아감
       }).catch(()=>{        
         this.email='';
         this.password='';
