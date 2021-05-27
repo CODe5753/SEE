@@ -601,11 +601,12 @@ input.form-control{
 </style>
 
 <style>
+    .title{text-align: center;}
     .wrap {position: absolute;left: 0;bottom: 3px;width: 75px;height: 75px;margin-left: -35px;text-align: center;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
     .wrap * {padding: 0;margin: 0;}
     .wrap .infos {width: 70px;height: 70px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
     .wrap .infos:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
-    .infos .title {padding: 3px 0 0 0px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;color: darkslateblue;}
+    .infos .title {margin-bottom:0px;padding: 3px 0 0 0px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;color: darkslateblue;}
     .infos .body {position: relative;overflow: hidden;}
     .infos .desc {position: relative;margin: 0px 0 0 0px;height: 35px;color: black;}
     .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}

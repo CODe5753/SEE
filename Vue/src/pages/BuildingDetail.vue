@@ -43,39 +43,20 @@
               <div class="position">
                   <div class="squ"> </div>
                     <div class="title"><h3>위치정보</h3></div>
-                    <div id="map" style="width:100%;height:400px;">
-                    <ul id="category">
-                      <li id="BK9" data-order="0"> 
-                          <span class="category_bg bank"></span>
-                          은행
-                      </li>       
-                      <li id="MT1" data-order="1"> 
-                          <span class="category_bg mart"></span>
-                          마트
-                      </li>  
-                      <li id="PM9" data-order="2"> 
-                          <span class="category_bg pharmacy"></span>
-                          약국
-                      </li>  
-                      <li id="OL7" data-order="3"> 
-                          <span class="category_bg oil"></span>
-                          주유소
-                      </li>  
-                      <li id="CE7" data-order="4"> 
-                          <span class="category_bg cafe"></span>
-                          카페
-                      </li>  
-                      <li id="CS2" data-order="5"> 
-                          <span class="category_bg store"></span>
-                          편의점
-                      </li>      
-                  </ul></div>
-              </div>
-            </div>
-            <h4 class="card-title "></h4>
+                    <div id="container" class="view_map">
+                    <div id="mapWrapper" style="width:100%;height:300px;position:relative;">
+                        <div id="map" style="width:100%;height:100%"></div> <!-- 지도를 표시할 div 입니다 -->
+                        <input type="button" id="btnRoadview" @click="toggleMap(false)" title="로드뷰 보기" value="로드뷰">
+                    </div>
+                    <div id="rvWrapper" style="width:100%;height:300px;position:absolute;top:0;left:0;">
+                        <div id="roadview" style="height:100%"></div> <!-- 로드뷰를 표시할 div 입니다 -->
+                        <input type="button" id="btnMap" @click="toggleMap(true)" title="지도 보기" value="지도">
+                    </div>
+                </div>       
+              </div>    
+            </div> 
           <div class="card-footer">
-            <br><br><br><br>    
-              <h4>test좀해보자..~</h4>             
+           
           </div>
 
       </card>
@@ -91,7 +72,7 @@ import { mapGetters } from "vuex";
 import {Card} from '@/components';
 import http from "@/util/http-common";
 
-var map;
+var map, roadview ;
 export default {
   name:'buildingdetail',
   data() {
@@ -103,7 +84,7 @@ export default {
     }
   },
   components:{
-        Card
+      Card
   },
   computed: {
     ...mapGetters(['apt','userinfo'])
@@ -127,27 +108,53 @@ export default {
   }, 
   methods:{
     initMap(){
+     
 
+      var position = new kakao.maps.LatLng(this.apt.lon, this.apt.lat);
       var mapContainer = document.getElementById('map'), // 지도를 표시할 div
           mapOption = {
-            center: new kakao.maps.LatLng(37.564343, 126.947613), // 지도의 중심좌표
+            center: position,
             level: 4 // 지도의 확대 레벨
       };
-      this.map = new kakao.maps.Map(mapContainer, mapOption); 
+      map = new kakao.maps.Map(mapContainer, mapOption);  //여기까지 지도 깔꼼
 
-      console.log(this.apt);
-      console.log(this.apt.lon +" "+ this.apt.lat)
-      this.map.setCenter(new kakao.maps.LatLng(this.apt.lon, this.apt.lat));
-      var mposition = new kakao.maps.LatLng(this.apt.lon, this.apt.lat);
       var marker = new kakao.maps.Marker({
-        position : mposition,
+        position : position,
       });
-      marker.setMap(this.map);
+      marker.setMap(map); //여기까지 마커 깔꼼
 
-      this.areaInfo();
+      var roadviewContainer = document.getElementById('roadview'); //로드뷰를 표시할 div
+      roadview = new kakao.maps.Roadview(roadviewContainer);
+      var roadviewClient = new kakao.maps.RoadviewClient(); //좌표로부터 로드뷰 파노ID를 가져올 로드뷰 helper객체
+
+      // 특정 위치의 좌표와 가까운 로드뷰의 panoId를 추출하여 로드뷰를 띄운다.
+      roadviewClient.getNearestPanoId(position, 50, function(panoId) {
+          roadview.setPanoId(panoId, position); //panoId와 중심좌표를 통해 로드뷰 실행
+      });
+
+      // 로드뷰 초기화가 완료되면 
+      kakao.maps.event.addListener(roadview, 'init', function() {
+
+          // 로드뷰에 특정 장소를 표시할 마커를 생성하고 로드뷰 위에 표시합니다 
+          var rvMarker = new kakao.maps.Marker({
+              position: placePosition,
+              map: roadview
+          });
+      });
 
     },//init
-    save(){
+    toggleMap(active){
+       if (active) {
+
+        // 지도가 보이도록 지도와 로드뷰를 감싸고 있는 div의 class를 변경합니다
+        container.className = "view_map"
+    } else {
+
+        // 지도가 숨겨지도록 지도와 로드뷰를 감싸고 있는 div의 class를 변경합니다
+        container.className = "view_roadview"   
+    }
+    },
+    save(){ //매물찜!
       alert("오호라");
       console.log(this.userinfo.code);
       console.log(this.$route.params.id);
@@ -165,169 +172,6 @@ export default {
           });
       }
     },
-  areaInfo(){
-      this.placeOverlay = new kakao.maps.CustomOverlay({zIndex:1});
-      this.contentNode = document.createElement('div') // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다 
-      this.markers = []; // 마커를 담을 배열입니다
-      this.currCategory = ''; // 현재 선택된 카테고리를 가지고 있을 변수입니다
-
-      // 장소 검색 객체를 생성합니다
-      var ps = new kakao.maps.services.Places(this.map); 
-
-      // 지도에 idle 이벤트를 등록합니다
-      kakao.maps.event.addListener(this.map, 'idle', this.searchPlaces);
-
-      // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다 
-      this.contentNode.className = 'placeinfo_wrap';
-
-      // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
-      // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다 
-      this.addEventHandle(this.contentNode, 'mousedown', kakao.maps.event.preventMap);
-      this.addEventHandle(this.contentNode, 'touchstart', kakao.maps.event.preventMap);
-
-      // 커스텀 오버레이 컨텐츠를 설정합니다
-      this.placeOverlay.setContent(this.contentNode);  
-
-      // 각 카테고리에 클릭 이벤트를 등록합니다
-      this.addCategoryClickEvent();
-  },//areainfo
-  addEventHandle(target, type, callback){
-    if (target.addEventListener) {
-        target.addEventListener(type, callback);
-    } else {
-        target.attachEvent('on' + type, callback);
-    }
-  },//addEventHandle
-  searchPlaces(){
-    if (!this.currCategory) {
-        return;
-    }
-    
-    // 커스텀 오버레이를 숨깁니다 
-    placeOverlay.setMap(null);
-
-    // 지도에 표시되고 있는 마커를 제거합니다
-    this.removeMarker();
-    
-    ps.categorySearch(this.currCategory, this.placesSearchCB, {useMapBounds:true}); 
-  },//searchPlaces
-  placesSearchCB(data, status, pagination){
-     if (status === kakao.maps.services.Status.OK) {
-
-        // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
-        this.displayPlaces(data);
-    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-        // 검색결과가 없는경우 해야할 처리가 있다면 이곳에 작성해 주세요
-
-    } else if (status === kakao.maps.services.Status.ERROR) {
-        // 에러로 인해 검색결과가 나오지 않은 경우 해야할 처리가 있다면 이곳에 작성해 주세요
-    }
-  },//placesSearchCB
-  displayPlaces(places){
-    // 몇번째 카테고리가 선택되어 있는지 얻어옵니다
-    // 이 순서는 스프라이트 이미지에서의 위치를 계산하는데 사용됩니다
-    var order = document.getElementById(this.currCategory).getAttribute('data-order');
-
-
-    for ( var i=0; i<places.length; i++ ) {
-
-            // 마커를 생성하고 지도에 표시합니다
-            var marker = addMarker(new kakao.maps.LatLng(places[i].y, places[i].x), order);
-
-            // 마커와 검색결과 항목을 클릭 했을 때
-            // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
-            (function(marker, place) {
-                kakao.maps.event.addListener(marker, 'click', function() {
-                    this.displayPlaceInfo(place);
-                });
-            })(marker, places[i]);
-    }
-  },//displayPlaces
-
-  addMarker(position, order) {
-    var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
-        imageSize = new kakao.maps.Size(27, 28),  // 마커 이미지의 크기
-        imgOptions =  {
-            spriteSize : new kakao.maps.Size(72, 208), // 스프라이트 이미지의 크기
-            spriteOrigin : new kakao.maps.Point(46, (order*36)), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
-            offset: new kakao.maps.Point(11, 28) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
-        },
-        markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
-            marker = new kakao.maps.Marker({
-            position: position, // 마커의 위치
-            image: markerImage 
-        });
-
-    marker.setMap(map); // 지도 위에 마커를 표출합니다
-    this.markers.push(marker);  // 배열에 생성된 마커를 추가합니다
-
-    return marker;
-  },//addMarker
-
-  removeMarker(){
-    for ( var i = 0; i < this.markers.length; i++ ) {
-        this.markers[i].setMap(null);
-    }   
-    this.markers = [];
-  }, //removeMarker
-  displayPlaceInfo(place){
-     var content = '<div class="placeinfo">' +
-                    '   <a class="title" href="' + place.place_url + '" target="_blank" title="' + place.place_name + '">' + place.place_name + '</a>';   
-
-    if (place.road_address_name) {
-        content += '    <span title="' + place.road_address_name + '">' + place.road_address_name + '</span>' +
-                    '  <span class="jibun" title="' + place.address_name + '">(지번 : ' + place.address_name + ')</span>';
-    }  else {
-        content += '    <span title="' + place.address_name + '">' + place.address_name + '</span>';
-    }                
-   
-    content += '    <span class="tel">' + place.phone + '</span>' + 
-                '</div>' + 
-                '<div class="after"></div>';
-
-    this.contentNode.innerHTML = content;
-    this.placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
-    this.placeOverlay.setMap(map);  
-  }, //displayPlace
-
-  addCategoryClickEvent() {
-    var category = document.getElementById('category')
-    var children = category.children;
-
-    for (var i=0; i<children.length; i++) {
-        // children[i].onclick = this.onClickCategory();
-        children[i].onclick = function(event){
-          console.log('onClickCategory in '+event);
-          var id = this.id,
-          className = this.className;
-
-          this.placeOverlay.setMap(null);
-
-          if (className === 'on') {
-              this.currCategory = '';
-              this.changeCategoryClass();
-              this.removeMarker();
-          } else {
-              this.currCategory = id;
-              this.changeCategoryClass(this);
-              this.searchPlaces();
-          }
-        };
-    }
-  }, //addCategory
-  changeCategoryClass(el) {
-    var category = document.getElementById('category'),
-        children = category.children,
-        i;
-
-    for ( i=0; i<children.length; i++ ) {
-        children[i].className = '';
-    }
-
-    if (el) {
-        el.className = 'on';
-    }
-  }, //change 
   },
 }
 </script>
@@ -335,6 +179,8 @@ export default {
 <style scoped>
 h3{
   font-weight: bold;
+  text-align :left;
+  margin-bottom: 10px;
 }
 .position .title{
   border-bottom: 1px solid;
@@ -342,7 +188,7 @@ h3{
 h1, h2{margin-bottom: 15px;}
 .squ{
   position: relative;
-    width: 1080px;
+    width: 100%;
     margin: 0 auto;
 }
 .title{
@@ -419,6 +265,12 @@ input.img-button{
 .placeinfo .tel {color:#0f7833;}
 .placeinfo .jibun {color:#999;font-size:11px;margin-top:0;}
 
-
+#container {overflow:hidden;height:300px;position:relative;}
+#btnRoadview,  #btnMap {position:absolute;top:5px;left:5px;padding:7px 12px;font-size:14px;border: 1px solid #dbdbdb;background-color: #fff;border-radius: 2px;box-shadow: 0 1px 1px rgba(0,0,0,.04);z-index:1;cursor:pointer;}
+#btnRoadview:hover,  #btnMap:hover{background-color: #fcfcfc;border: 1px solid #c1c1c1;}
+#container.view_map #mapWrapper {z-index: 10;}
+#container.view_map #btnMap {display: none;}
+#container.view_roadview #mapWrapper {z-index: 0;}
+#container.view_roadview #btnRoadview {display: none;}
 </style>
 
