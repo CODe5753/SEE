@@ -155,10 +155,9 @@ export default {
     }
     },
     save(){ //매물찜!
-      alert("오호라");
       console.log(this.userinfo.code);
       console.log(this.$route.params.id);
-      if(this.userinfo==null){
+      if(!this.userinfo){
         alert("로그인 먼저 해주세요");
         this.$router.push('/login');
       }else{
