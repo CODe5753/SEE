@@ -25,6 +25,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+
 @RestController
 @RequestMapping("/house")
 @Api("HouseInfo 컨트롤러 API V1")
@@ -35,6 +42,53 @@ public class HouseController {
 	
 	@Autowired
 	HouseService houseService;
+	
+	@ApiOperation(value="House 이미지를 가져옴")
+	@PostMapping("/getimage")
+	public ResponseEntity<String> getimage(@RequestBody @ApiParam(value = "이미지 검색어") Map<String,String> map){
+		logger.info("이미지 검색어 : "+map.get("keyword"));
+			String keyword = map.get("keyword");
+	        String clientId = "cC7WjpwXayQ0glYzWA_z";//애플리케이션 클라이언트 아이디값";
+	        String clientSecret = "RYIrKUmtFK";//애플리케이션 클라이언트 시크릿값";
+	        try {
+	            String query = URLEncoder.encode(keyword, "UTF-8");
+	            String apiURL = "https://openapi.naver.com/v1/search/image?query=" + query + "?display=1&sort=sim";
+//	            String apiURL = "https://openapi.naver.com/v1/search/image.xml?query=%EC%A3%BC%EC%8B%9D&display=10&start=1&sort=sim";
+	            logger.info(apiURL);
+	            URL url = new URL(apiURL);
+	            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+	            con.setRequestMethod("GET");
+	            con.setRequestProperty("X-Naver-Client-Id", clientId);
+	            con.setRequestProperty("X-Naver-Client-Secret", clientSecret);
+//	           
+//	            // post request
+//	            String postParams = ;
+//	            con.setDoOutput(true);
+//	            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+//	            wr.writeBytes(postParams);
+//	            wr.flush();
+//	            wr.close();
+	            int responseCode = con.getResponseCode();
+	            BufferedReader br;
+	            if(responseCode==200) { // 정상 호출
+	                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+	            } else {  // 에러 발생
+	                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+	            }
+	            String inputLine;
+	            StringBuffer response = new StringBuffer();
+	            while ((inputLine = br.readLine()) != null) {
+	                response.append(inputLine);
+	            }
+	            br.close();
+	            logger.info(response.toString());
+	            return new ResponseEntity<String>(response.toString(),HttpStatus.OK);
+//	            System.out.println(response.toString());
+	        } catch (Exception e) {
+	        	return new ResponseEntity(HttpStatus.NO_CONTENT);
+//	            System.out.println(e);
+	        }
+	}
 	
 	@ApiOperation(value = "HouseInfo 목록 조회", notes="HouseInfo에 대한 모든 정보를 반환합니다.")
 	@GetMapping("/getlist")
