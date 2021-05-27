@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.NoticeDao">
+
+	<insert id="regist" parameterType="noticedto">
+		insert into notice(title, content)
+		values (#{title}, #{content})
+	</insert>
+	
+	<select id="searchlist" parameterType="String" resultType="noticedto">
+		select *
+		from notice
+		where title like concat('%',#{title},'%')
+	</select>
+	
+	<select id="select" parameterType="int" resultType="noticedto">
+		select *
+		from notice
+		where no = #{no}
+	</select>
+	
+	<delete id="remove" parameterType="int">
+		delete
+		from notice
+		where no = #{no}; 
+	</delete>
+	
+	<update id="modify" parameterType="noticedto">
+		update notice
+		set title = #{title} , content = #{content} , regdate = now()
+		where no = #{no}
+	</update>
+	
+	<select id="getlist" resultType="noticedto">
+		select *
+		from notice
+	</select>
+	
+</mapper>

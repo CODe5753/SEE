@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.MemberDao">
+
+	<select id="login" parameterType="map" resultType="memberDto">
+		select * 
+		from `member`
+		where email = #{email} and password = #{password}		
+	</select>
+	<select id="memberList" resultType="memberDto">
+		select * 
+		from `member`
+	</select>
+	<select id="userinfo" resultType="memberDto">
+		select *
+		from `member`
+		where code=${code}
+	</select>
+	<update id="passUpdate" parameterType="map">
+		update `member`
+		set password = #{password}
+		where email = #{email}
+	</update>
+	
+	<delete id="remove" parameterType="String">
+		delete
+		from `member`
+		where email = #{email}
+	</delete>
+	
+	<insert id="register" parameterType="map">
+		insert into `member` (name, password, email, address, level)
+		values (#{name}, #{password}, #{email}, #{address} , #{level} )
+	</insert>
+	
+	<update id="memberUpdate" parameterType="map">
+		update `member`
+		set name = #{name}, address = #{address}
+		where email = #{email}	
+	</update>
+	<update id="adminUpdate" parameterType="map">
+		update `member`
+		set level=${level}, password=#{password}, name=#{name}, address=#{address}
+		where code=${code}
+	</update>
+	
+	<select id="pwfind" parameterType="map" resultType="memberDto">
+		select *
+		from `member`
+		where name = #{name} and email = #{email}
+	</select>
+	
+</mapper>

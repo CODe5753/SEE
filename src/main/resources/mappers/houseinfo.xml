@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.ssafy.happyhouse.model.mapper.HouseDao">
+
+	<select id="getlist" resultType="houseinfodto">
+		select *
+		from buildinginfo limit 100;
+	</select>
+	
+	<select id="specificzone" parameterType="map" resultType="houseinfodto">
+		<![CDATA[
+			select *
+			from buildinginfo
+			where sigungu like concat('%','서울특별시','%') and
+			lon>=#{Ma1} and lon<=#{Ma2} and lat>=#{La1} and lat<=#{La2}
+		]]>
+	</select>
+	
+	<select id="allcolumnsearch" parameterType="String" resultType="houseinfodto">
+		select *
+		from buildinginfo
+		where sigungu like concat('%',#{keyword},'%') or name like concat('%',#{keyword},'%') or roadname like concat('%',#{keyword},'%')
+	</select>
+
+	<select id="searchlist" parameterType="map" resultType="houseinfodto">
+		<choose>
+			<when test="select.equals('name')">
+				select *
+				from buildinginfo
+				where name like concat('%',#{search},'%')
+			</when>
+			<when test="select.equals('sigungu')">
+				select *
+				from buildinginfo
+				where sigungu like concat('%',#{search},'%')
+			</when>
+			<when test="select.equals('contract_type')">
+				select *
+				from buildinginfo
+				where contract_type = #{search}
+			</when>
+			<when test="select.equals('')">
+				select *
+				from buildinginfo
+			</when>
+			<!-- <when test="select.equals('all')">
+				select *
+				from housedeal
+				where AptName like concat('%',#{search},'%')
+				or dong like concat('%',#{search},'%')
+				or info like concat('%',#{search},'%')
+			</when>
+			<otherwise>
+			</otherwise> -->
+		</choose>
+	</select>
+	
+	<select id="detail" parameterType="Int" resultType="houseinfodto">
+		select *
+		from buildinginfo
+		where id = #{id}
+	</select>
+	
+	<select id="getInteresetBuilding" resultType="houseinfodto">
+		select *
+		from buildinginfo
+		where id in ( select building_id
+					from interest_building
+					where member_code =#{member_code});
+	</select>
+
+</mapper>

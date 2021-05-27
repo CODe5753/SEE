@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.QnaDao">
+
+<!-- 	<select id="getlist" resultType="QnaDto">
+		select qna_board_table.id, qna_board_table.title, member.name, qna_board_table.create_date
+		from qna_board_table inner join member
+		on qna_board_table.member_code = member.code
+	</select> -->
+	
+	<select id="getlist" resultType="qnaDto">
+			select *
+			from qna_board_table
+			where board_id is null
+	</select>
+	<select id="getmyqna" resultType="qnaDto">
+			select *
+			from qna_board_table
+			where member_code = #{id}
+	</select>
+	<select id="getquestion" resultType="qnaDto" >
+		select *
+		from qna_board_table
+		where id = #{id}
+	</select>
+	
+	<select id="getanswer" resultType="qnaDto">
+		select *
+		from qna_board_table
+		where board_id is not null and board_id = #{id}
+	</select>
+	
+	<select id="searchlist" parameterType="map" resultType="qnaDto">
+		<choose>
+			<when test="select.equals('title')">
+				select *
+				from qna_board_table 
+				where title like concat('%',#{search},'%') and board_id is null
+			</when>
+			<when test="select.equals('member_code')">
+				select *
+				from qna_board_table
+				where member_code =${search} and board_id is null
+			</when>
+			<when test="select.equals('content')">
+				select *
+				from qna_board_table
+				where content like concat('%',#{search},'%') and board_id is null
+			</when>
+			<when test="select.equals('total')">
+				select *
+				from qna_board_table
+				where (member_code =#{search} 
+				or `title` like concat('%',#{search},'%') 
+				or content like concat('%',#{search},'%')) 
+				and board_id is null
+			</when>
+			<otherwise>
+				select *
+				from qna_board_table
+				where type = #{select} and (title like concat('%',#{search},'%'))
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="regist" parameterType="qnaDto">
+		insert into qna_board_table (type, title, content , member_code , board_id)
+		<if test="board_id==0">
+		values (#{type},#{title}, #{content}, #{member_code}, null)
+		</if>
+		<if test="board_id>0">
+		values (#{type},#{title},#{content}, #{member_code}, #{board_id})
+		</if>
+	</insert>
+	
+	<update id="update" parameterType="qnaDto">
+		update qna_board_table
+		set type = #{type}, title = #{title}, content = #{content}, update_date = now()
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete
+		from qna_board_table
+		where id = #{id}
+	</delete>
+	
+	<insert id="registcomment" parameterType="qnacommentDto">
+		insert into qna_board_comment_table(member_code, board_id, comment)
+		values (#{member_code}, #{board_id}, #{comment})
+	</insert>
+	
+	<select id="getcommentlist" resultType="qnacommentDto">
+		select *
+		from qna_board_comment_table
+		where board_id = #{id}
+	</select>
+	
+	<update id="updatecomment" parameterType="qnacommentDto">
+		update qna_board_comment_table
+		set comment = #{comment}
+		where id = #{id}
+	</update>
+	
+	<delete id="removecomment">
+		delete
+		from qna_board_comment_table
+		where id = #{id}
+	</delete>
+	
+</mapper>
