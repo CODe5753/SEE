@@ -42,9 +42,6 @@ public class Member implements UserDetails {
 	@Column(name="password")
 	private String password;
 		
-	@Column(name="address")
-	private String address;
-	
 	@NonNull
 	@Column(name="regdate")
 	private static Date regdate = new Date();

@@ -224,7 +224,8 @@ export default new Router({
       name: 'buildingdetail',
       components: { default: BuildingDetail, header: MainNavbar, footer:MainFooter},      
       props: {
-        header: { colorOnScroll: 100 , type:'black'},
+        header: { colorOnScroll: 100 }, 
+        footer: { backgroundColor:'black' },
       }
     },
   ],
