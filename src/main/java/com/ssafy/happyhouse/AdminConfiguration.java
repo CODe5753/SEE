@@ -20,7 +20,7 @@ public class AdminConfiguration extends WebMvcConfigurerAdapter{
 		/*경로 수정 필요함!*/
 		System.out.println("add Admin Interceptors");
 		List<String> list = new ArrayList<>();
-		list.add("/admin/**");//관리자페이지
+//		list.add("/admin/**");//관리자페이지
 		list.add("/notice/register");//공지작성		
 		registry.addInterceptor(adminInterceptor)
 			.addPathPatterns(list)
