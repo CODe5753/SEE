@@ -460,7 +460,7 @@ export default{
         if(element.contract_type=='월세'){
           itemStr += element.monthlyrent+"만원";
         }else {
-          itemStr +=element.dealamount/1000+"억원";
+          itemStr +=element.dealamount/10000+"억원";
         }
         el.innerHTML = itemStr;
         el.className = 'item';

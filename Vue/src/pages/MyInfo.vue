@@ -46,6 +46,11 @@
                 hover
                 @row-clicked="myRowClickHandler_apts"
                 >
+                <template #cell(관리)="row">
+                  <b-button size="sm" @click="deleteInterestBuilding(row.item.번호)" class="mr-2 btn-danger">
+                      삭제
+                  </b-button>
+              </template>
               </b-table>
               </div>
           </div>
@@ -97,6 +102,7 @@
 <script>
 // import {Card} from '@/components';
 import { mapGetters } from "vuex";
+import http from '@/util/http-common.js'
 export default {
     components:{
         // Card
@@ -125,7 +131,8 @@ export default {
                 {key:'매매(보증금)',sortable:true},
                 {key:'건축년도',sortable:true},
                 {key:'도로명주소'},
-                {key:'번호',thClass:'d-none',tdClass:'d-none'}
+                {key:'번호',thClass:'d-none',tdClass:'d-none'},
+                '관리'
             ]  
         }
     },
@@ -143,6 +150,21 @@ export default {
         this.$store.dispatch("getInterestBuildings",this.userinfo.code);
     },
     methods: {
+        deleteInterestBuilding(id){
+          console.log('삭제 : '+id);
+          http.delete('interestbuilding/remove',{
+            data: {
+              building_id:id,
+              member_code:this.userinfo.code,            
+            },
+          }).then((response)=>{
+            this.$store.dispatch("getInterestBuildings",this.userinfo.code).then(()=>{
+              alert('관심건물이 삭제되었습니다.');
+            });
+          }).catch((err)=>{
+            console.log(err);
+          })
+        },
         getAptFields(){
             console.log(this.apts);
             let list = [];
